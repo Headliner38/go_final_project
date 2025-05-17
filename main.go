@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/Headliner38/go_final_project/pkg/db"
-	"github.com/Headliner38/go_final_project/pkg/server"
+	"go_final_project/pkg/db"
+	"go_final_project/pkg/server"
 )
 
 func main() {

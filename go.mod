@@ -1,9 +1,11 @@
-module github.com/Headliner38/go_final_project
+module go_final_project
 
 go 1.23.3
 
 require (
+	//github.com/Headliner38/go_final_project v0.0.0-20250510151722-f3d5ccd25649
 	github.com/jmoiron/sqlx v1.4.0
+	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/stretchr/testify v1.10.0
 	modernc.org/sqlite v1.37.0
 )
