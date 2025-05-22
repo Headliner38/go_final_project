@@ -131,7 +131,7 @@ func TestAddTask(t *testing.T) {
 			var mid any
 			mid, ok = m["id"]
 			if !ok {
-				t.Errorf("Не возвращён id для задачи %v", v)
+				t.Errorf("Не возвращён id для задачи %v, %v", v, m)
 				continue
 			}
 			id := fmt.Sprint(mid)

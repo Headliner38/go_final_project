@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"go_final_project/pkg/db"
 	"go_final_project/pkg/server"
 )
 
 func main() {
-	err := db.Init("scheduler.db")
+	conn, err := db.Init("scheduler.db")
 	if err != nil {
-		fmt.Printf("Ошибка создания БД: %s", err)
+		log.Fatalf("Ошибка открытия базы данных: %v", err)
 	}
+	db.DB = conn
 
 	err = server.Run()
 	if err != nil {

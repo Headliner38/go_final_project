@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"go_final_project/pkg/db"
 	"time"
@@ -8,12 +9,12 @@ import (
 
 func checkDate(task *db.Task) error {
 	now := time.Now()
-
+	layout := "20060102"
 	if task.Date == "" {
-		task.Date = now.Format("20060102")
+		task.Date = now.Format(layout)
 	}
 
-	t, err := time.Parse("20060102", task.Date)
+	t, err := time.Parse(layout, task.Date)
 	if err != nil {
 		return fmt.Errorf("неверный формат даты: %v", err)
 	}
@@ -21,16 +22,16 @@ func checkDate(task *db.Task) error {
 	if task.Repeat != "" {
 		next, err := NextDate(now, task.Date, task.Repeat)
 		if err != nil {
-			return fmt.Errorf("неверное правило повторения")
+			return errors.New("Неверное правило повторения: " + err.Error())
 		}
+		// если дата меньше сегодня — используем next
 		if afterNow(now, t) {
-			if len(task.Repeat) == 0 {
-				// если правила повторения нет, то берём сегодняшнее число
-				task.Date = now.Format("20060102")
-			} else {
-				// в противном случае, берём вычисленную ранее следующую дату
-				task.Date = next
-			}
+			task.Date = next
+		}
+	} else {
+		// если без repeat и дата в прошлом — ставим сегодняшнюю
+		if afterNow(now, t) {
+			task.Date = now.Format(layout)
 		}
 	}
 

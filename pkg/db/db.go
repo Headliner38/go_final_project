@@ -19,19 +19,20 @@ CREATE TABLE scheduler (
 CREATE INDEX date_idx ON scheduler(date);
 `
 
-func Init(dbFile string) error {
+func Init(dbFile string) (*sql.DB, error) {
 	_, err := os.Stat(dbFile)
 	exists := os.IsNotExist(err)
 
 	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
-		return err
+		return db, err
 	}
+	//defer db.Close()
 	if exists {
 		_, err := db.Exec(schema)
 		if err != nil {
-			return err
+			return db, err
 		}
 	}
-	return nil
+	return db, nil
 }
