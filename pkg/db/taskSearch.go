@@ -6,6 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// a
 func SearchTaskByWord(search string, limit int) ([]*Task, error) {
 	tasks := make([]*Task, 0)
 	searchPtrn := "%" + search + "%"
