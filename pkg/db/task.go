@@ -44,7 +44,7 @@ func Tasks(limit int) ([]*Task, error) {
 		return nil, fmt.Errorf("ошибка при создании запроса: %v", err)
 	}
 	defer rows.Close()
-	var tasks []*Task
+	tasks := make([]*Task, 0)
 	for rows.Next() {
 		var t Task
 		err := rows.Scan(&t.ID, &t.Date, &t.Title, &t.Comment, &t.Repeat)

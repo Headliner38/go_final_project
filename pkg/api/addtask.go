@@ -3,8 +3,10 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"go_final_project/pkg/api/auth"
 	"go_final_project/pkg/db"
 	"net/http"
+	"os"
 )
 
 func taskHandler(res http.ResponseWriter, req *http.Request) {
@@ -87,6 +89,10 @@ func writeJson(res http.ResponseWriter, statusCode int, data any) {
 
 }
 
+func WriteJSON(res http.ResponseWriter, statusCode int, data any) {
+	writeJson(res, statusCode, data)
+}
+
 func addTaskHandler(res http.ResponseWriter, req *http.Request) {
 	var task db.Task
 	err := json.NewDecoder(req.Body).Decode(&task)
@@ -112,4 +118,41 @@ func addTaskHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	writeJson(res, http.StatusOK, map[string]string{"id": fmt.Sprintf("%d", id)})
+}
+
+type AuthRequest struct {
+	Password string `json:"password"`
+}
+
+func loginHandler(res http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		writeJson(res, http.StatusMethodNotAllowed, map[string]string{"error": "неподдерживаемый метод"})
+		return
+	}
+
+	correctPass := os.Getenv("TODO_PASSWORD")
+	if len(correctPass) == 0 {
+		writeJson(res, http.StatusBadRequest, map[string]string{"error": "пароль в переменной окружения не задан"})
+		return
+	}
+
+	var au AuthRequest
+	err := json.NewDecoder(req.Body).Decode(&au)
+	if err != nil {
+		writeJson(res, http.StatusBadRequest, map[string]string{"error": "неверный запрос"})
+		return
+	}
+
+	//fmt.Println("my pass: ", passStr, "cor pas: ", correctPass) //смотрим пароли для себя
+	if au.Password != correctPass {
+		writeJson(res, http.StatusUnauthorized, map[string]string{"error": "Неверный пароль"})
+		return
+	}
+
+	token, err := auth.GenerateToken(correctPass) //создаем токен
+	if err != nil {
+		writeJson(res, http.StatusUnauthorized, map[string]string{"error": "Не удалось сгенерировать jwt token: " + err.Error()})
+		return
+	}
+	writeJson(res, http.StatusOK, map[string]string{"token": token})
 }
