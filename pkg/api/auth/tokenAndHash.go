@@ -29,6 +29,8 @@ func GenerateToken(password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(ValidateToken(signedToken, password))
+
 	return signedToken, nil
 }
 

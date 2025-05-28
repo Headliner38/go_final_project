@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_final_project/pkg/api/auth"
 	"go_final_project/pkg/db"
+	"go_final_project/tests"
 	"net/http"
 	"os"
 )
@@ -154,5 +155,7 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 		writeJson(res, http.StatusUnauthorized, map[string]string{"error": "Не удалось сгенерировать jwt token: " + err.Error()})
 		return
 	}
+	tests.Token = token
+	fmt.Printf("token - %v", token)
 	writeJson(res, http.StatusOK, map[string]string{"token": token})
 }
