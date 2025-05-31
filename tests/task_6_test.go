@@ -30,6 +30,7 @@ func TestTask(t *testing.T) {
 	assert.NoError(t, err)
 	var m map[string]string
 	err = json.Unmarshal(body, &m)
+	fmt.Printf("body: %v\n", string(body))
 	assert.NoError(t, err)
 
 	e, ok := m["error"]
