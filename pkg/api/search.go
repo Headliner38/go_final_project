@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+const limit = 50
+
 type TasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
 }
@@ -14,7 +16,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 
 	searchStr := req.URL.Query().Get("search")
 	if searchStr == "" {
-		tasks, err := db.Tasks(50) // в параметре максимальное количество записей
+		tasks, err := db.Tasks(limit) // в параметре максимальное количество записей
 		if err != nil {
 			writeJson(res, http.StatusBadRequest, map[string]string{"error": err.Error()})
 			return
@@ -23,7 +25,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if date, err := time.Parse("02.01.2006", searchStr); err == nil {
-		tasks, err := db.SearchTaskByDate(date.Format("20060102"), 50)
+		tasks, err := db.SearchTaskByDate(date.Format("20060102"), limit)
 		if err != nil {
 			writeJson(res, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return
@@ -31,7 +33,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		writeJson(res, http.StatusOK, TasksResp{Tasks: tasks})
 		return
 	} else {
-		tasks, err := db.SearchTaskByWord(searchStr, 50)
+		tasks, err := db.SearchTaskByWord(searchStr, limit)
 		if err != nil {
 			writeJson(res, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return

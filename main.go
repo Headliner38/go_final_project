@@ -20,6 +20,7 @@ func main() {
 		log.Fatalf("Ошибка открытия базы данных: %v", err)
 	}
 	db.DB = conn
+	defer db.DB.Close()
 
 	err = server.Run()
 	if err != nil {

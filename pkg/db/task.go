@@ -19,18 +19,22 @@ func AddTask(task *Task) (int64, error) {
 	var id int64
 
 	query := `INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?) returning id;`
-	rows, err := DB.Query(query, task.Date, task.Title, task.Comment, task.Repeat)
-	fmt.Print(DB)
+	res, err := DB.Exec(query, task.Date, task.Title, task.Comment, task.Repeat)
+	//fmt.Print(DB)
 	if err != nil {
 		return 0, err
 	}
-	defer rows.Close()
-	if rows.Next() {
-		err := rows.Scan(&id)
-		if err != nil {
-			return 0, fmt.Errorf("не удалось получить id: %w", err)
-		}
+	id, err = res.LastInsertId()
+	if err != nil {
+		return 0, err
 	}
+	//defer rows.Close()
+	//if rows.Next() {
+	//	err := rows.Scan(&id)
+	//	if err != nil {
+	//		return 0, fmt.Errorf("не удалось получить id: %w", err)
+	//	}
+	//}
 	return id, nil
 }
 

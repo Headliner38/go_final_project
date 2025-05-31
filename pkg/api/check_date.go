@@ -9,12 +9,12 @@ import (
 
 func checkDate(task *db.Task) error {
 	now := time.Now()
-	layout := "20060102"
+	//layout := "20060102"
 	if task.Date == "" {
-		task.Date = now.Format(layout)
+		task.Date = now.Format(dateFormat)
 	}
 
-	t, err := time.Parse(layout, task.Date)
+	t, err := time.Parse(dateFormat, task.Date)
 	if err != nil {
 		return fmt.Errorf("неверный формат даты: %v", err)
 	}
@@ -31,7 +31,7 @@ func checkDate(task *db.Task) error {
 	} else {
 		// если без repeat и дата в прошлом — ставим сегодняшнюю
 		if afterNow(now, t) {
-			task.Date = now.Format(layout)
+			task.Date = now.Format(dateFormat)
 		}
 	}
 

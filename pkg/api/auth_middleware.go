@@ -6,9 +6,14 @@ import (
 	"os"
 )
 
+var pass string
+
+func init() {
+	pass = os.Getenv("TODO_PASSWORD")
+}
+
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-		pass := os.Getenv("TODO_PASSWORD")
 		if len(pass) > 0 {
 			var jwt string
 
